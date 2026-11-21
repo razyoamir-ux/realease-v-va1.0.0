@@ -1,6 +1,9 @@
 import { world, system, EntityDamageCause } from "@minecraft/server";
 
 const COOLDOWN = new Map();
+const MAGAZINES = new Map();
+const LAST_GUN = new Map();
+const CAPACITY = {"varnix:pistol":12,"varnix:rifle":30,"varnix:shotgun":6,"varnix:sniper":5};
 const lastUse = (id, key, ticks) => {
   const now = system.currentTick;
   const k = id + ":" + key;
@@ -23,6 +26,11 @@ function shoot(player, itemId) {
   };
   const cfg = configs[itemId];
   if (!cfg || !lastUse(player.id, itemId, cfg.cooldown)) return;
+  LAST_GUN.set(player.id, itemId);
+  const magazineKey = player.id + ":" + itemId;
+  const remaining = MAGAZINES.has(magazineKey) ? MAGAZINES.get(magazineKey) : CAPACITY[itemId];
+  if (remaining <= 0) { message(player, "خشاب خالی است؛ جعبه مهمات را استفاده کن."); return; }
+  MAGAZINES.set(magazineKey, remaining - 1);
   try {
     const hits = player.getEntitiesFromViewDirection({maxDistance: cfg.range, ignoreBlockCollision: false});
     if (itemId === "varnix:shotgun") {
@@ -62,7 +70,7 @@ world.afterEvents.itemUse.subscribe(({source, itemStack}) => {
       message(source, "خودروی فرسوده در نزدیکی تو ظاهر شد. نزدیکش شو و سوار شو.");
     } catch { message(source, "ساخت خودرو ناموفق بود؛ بسته رفتاری را بررسی کن."); }
   }
-  if (id === "varnix:radio") {
+  if (id === "varnix:ammo_box") {\n    const gun = LAST_GUN.get(source.id) ?? "varnix:pistol";\n    const inv = source.getComponent("minecraft:inventory")?.container;\n    if (inv) {\n      for (let i = 0; i < inv.size; i++) {\n        const stack = inv.getItem(i);\n        if (stack?.typeId === "varnix:ammo_box") {\n          if (stack.amount > 1) { stack.amount -= 1; inv.setItem(i, stack); }\n          else inv.setItem(i);\n          break;\n        }\n      }\n    }\n    MAGAZINES.set(source.id + ":" + gun, CAPACITY[gun]);\n    message(source, "خشاب " + gun.replace("varnix:","") + " پر شد.");\n  }\n  if (id === "varnix:radio") {
     message(source, "بی‌سیم اضطراری: «اینجا پایگاه شمالی... اگر کسی صدای ما را می‌شنود، به بیمارستان قدیمی نزدیک نشود.»");
   }
 });
