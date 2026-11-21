@@ -1,0 +1,18 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "varnix:ammo_box",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "ammo_box",
+      "minecraft:display_name": {
+        "value": "جعبه مهمات"
+      },
+      "minecraft:max_stack_size": 16
+    }
+  }
+}
