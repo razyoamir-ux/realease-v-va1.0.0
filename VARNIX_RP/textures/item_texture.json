@@ -52,6 +52,9 @@
     },
     "uranium_ammo": {
       "textures": "textures/items/fireworks"
+    },
+    "recipe_guide": {
+      "textures": "textures/items/book_written"
     }
   }
 }
