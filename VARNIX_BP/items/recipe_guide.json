@@ -1,0 +1,17 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "varnix:recipe_guide",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "recipe_guide",
+      "minecraft:display_name": {
+        "value": "راهنمای فارسی دستور ساخت"
+      }
+    }
+  }
+}
