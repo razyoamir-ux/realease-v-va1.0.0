@@ -91,7 +91,7 @@ world.afterEvents.playerSpawn.subscribe(({player,initialSpawn}) => {
     try {
       const inv=inventory(player);
       if (inv) {
-        for (const [id,count] of [["varnix:phone",1],["varnix:radio",1],["varnix:pistol",1],["varnix:ammo_box",2],["varnix:field_bandage",3],["minecraft:coal",4]]) {
+        for (const [id,count] of [["varnix:phone",1],["varnix:radio",1],["varnix:pistol",1],["varnix:ammo_box",2],["varnix:field_bandage",3],["varnix:recipe_guide",1],["minecraft:coal",4]]) {
           inv.addItem(new ItemStack(id,count));
         }
       }
@@ -116,11 +116,11 @@ world.afterEvents.itemUse.subscribe(({source,itemStack}) => {
   if (id==="varnix:antiviral_serum") cure(source);
   if (id==="varnix:recipe_guide") {
     message(source,"§e§lراهنمای فارسی دستورهای ساخت وارنیکس");
-    message(source,"§6[پادزهر] §f۲ اورانیوم + ۲ بطری عسل + ۲ طلا + ۱ بطری شیشه‌ای؛ خروجی: ۲ پادزهر. در میز ساخت بساز و پس از آلودگی مصرف کن.");
-    message(source,"§6[سلول انرژی] §f۲ اورانیوم + ۴ ردستون + ۲ آهن + ۱ باتری صنعتی؛ خروجی: ۲ سلول انرژی. برای ژنراتور ویژه استفاده کن.");
-    message(source,"§6[باتری صنعتی] §f۴ ردستون + ۴ آهن؛ خروجی: ۲ باتری.");
+    message(source,"§6[پادزهر] §f۲ اورانیوم + ۲ بطری عسل + ۲ شمش طلا + ۱ بطری شیشه‌ای؛ خروجی: ۲ پادزهر. در میز ساخت بساز و پس از آلودگی مصرف کن.");
+    message(source,"§6[سلول انرژی] §f۲ اورانیوم + ۴ ردستون + ۳ آهن + ۱ باتری صنعتی؛ خروجی: ۲ سلول انرژی. برای ژنراتور ویژه استفاده کن.");
+    message(source,"§6[باتری صنعتی] §f۴ ردستون + ۱ آهن؛ خروجی: ۲ باتری.");
     message(source,"§6[گالن سوخت] §f۸ آهن + ۱ سطل؛ خروجی: ۲ گالن سوخت.");
-    message(source,"§6[مهمات اورانیومی] §f۱ اورانیوم + ۲ آهن + ۱ باروت؛ خروجی: ۴ مهمات. با استفاده از آن خشاب ویژه پر می‌شود.");
+    message(source,"§6[مهمات اورانیومی] §f۱ اورانیوم + ۳ آهن + ۱ باروت؛ خروجی: ۴ مهمات. با استفاده از آن خشاب ویژه پر می‌شود.");
     message(source,"§6[ژنراتور] §f۷ آهن + ۱ ردستون + ۱ کوره؛ خروجی: ۱ ژنراتور.");
     message(source,"§6[سلاح‌ها] §fکلت، رایفل، شاتگان و اسنایپر با دستورهای ساخت اختصاصی در میز ساخت ساخته می‌شوند.");
     message(source,"§aراهنمای سوخت: §fزغال ۵ دقیقه، گالن سوخت ۱۰ دقیقه، سلول اورانیومی ۲۰ دقیقه؛ دستگاه‌های برقی تا شعاع ۱۶ بلوک کار می‌کنند.");
