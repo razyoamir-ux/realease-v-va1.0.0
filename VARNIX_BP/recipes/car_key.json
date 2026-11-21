@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "varnix:car_key_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      " A ",
+      "ABA",
+      " A "
+    ],
+    "key": {
+      "A": {
+        "item": "minecraft:iron_nugget"
+      },
+      "B": {
+        "item": "minecraft:gold_nugget"
+      }
+    },
+    "result": {
+      "item": "varnix:car_key",
+      "count": 1
+    }
+  }
+}
