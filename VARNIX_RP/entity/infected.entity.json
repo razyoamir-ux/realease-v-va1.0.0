@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "varnix:infected",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/zombie/zombie"
+      },
+      "geometry": {
+        "default": "geometry.zombie"
+      },
+      "render_controllers": [
+        "controller.render.zombie"
+      ],
+      "spawn_egg": {
+        "base_color": "#52634A",
+        "overlay_color": "#242B24"
+      }
+    }
+  }
+}
