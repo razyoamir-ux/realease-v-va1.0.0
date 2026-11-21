@@ -1,1 +1,3 @@
-tellraw @s {"rawtext":[{"text":"§aحالت بقای آزاد"},{"text":"\n§fبدون مأموریت اجباری زنده بمان، بساز و اکتشاف کن."}]}
+scoreboard players set #world varnix_mode 0
+tag @a remove varnix_survivor
+tellraw @a {"rawtext":[{"text":"§a§lحالت بقای آزاد فعال شد"},{"text":"\n§fهیچ مأموریت داستانی اجباری وجود ندارد؛ آزادانه بقا پیدا کن، بساز و اکتشاف کن."}]}
