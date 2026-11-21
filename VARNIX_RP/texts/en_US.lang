@@ -1,2 +1,6 @@
 pack.name=VARNIX APOCALYPSE LITE
 pack.description=Persian apocalypse survival add-on
+item.varnix:field_bandage.name=Field Bandage
+item.varnix:flare.name=Emergency Flare
+item.varnix:rusty_crowbar.name=Rusty Crowbar
+entity.varnix:infected.name=Infected
