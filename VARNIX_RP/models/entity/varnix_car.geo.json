@@ -1,0 +1,137 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.varnix_car",
+        "texture_width": 64,
+        "texture_height": 64,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 2.5,
+        "visible_bounds_offset": [
+          0,
+          0.75,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "body",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8,
+                4,
+                -12
+              ],
+              "size": [
+                16,
+                5,
+                24
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -6,
+                9,
+                -6
+              ],
+              "size": [
+                12,
+                5,
+                12
+              ],
+              "uv": [
+                0,
+                30
+              ]
+            }
+          ]
+        },
+        {
+          "name": "wheels",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -10,
+                1,
+                -9
+              ],
+              "size": [
+                2,
+                4,
+                5
+              ],
+              "uv": [
+                32,
+                0
+              ]
+            },
+            {
+              "origin": [
+                8,
+                1,
+                -9
+              ],
+              "size": [
+                2,
+                4,
+                5
+              ],
+              "uv": [
+                32,
+                0
+              ]
+            },
+            {
+              "origin": [
+                -10,
+                1,
+                5
+              ],
+              "size": [
+                2,
+                4,
+                5
+              ],
+              "uv": [
+                32,
+                0
+              ]
+            },
+            {
+              "origin": [
+                8,
+                1,
+                5
+              ],
+              "size": [
+                2,
+                4,
+                5
+              ],
+              "uv": [
+                32,
+                0
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
