@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "VARNIX APOCALYPSE LITE - Behavior",
+    "description": "بسته رفتاری فارسی وارنیکس؛ نسخه توسعه",
+    "uuid": "e4e2e22a-6b88-4d5f-aeb4-5c8e8a4c1001",
+    "version": [
+      0,
+      1,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      51
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "e4e2e22a-6b88-4d5f-aeb4-5c8e8a4c1002",
+      "version": [
+        0,
+        1,
+        0
+      ]
+    }
+  ]
+}
