@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "VARNIX APOCALYPSE LITE - Resources",
+    "description": "منابع و فارسی‌سازی وارنیکس؛ نسخه توسعه",
+    "uuid": "e4e2e22a-6b88-4d5f-aeb4-5c8e8a4c1003",
+    "version": [
+      0,
+      1,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      51
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "e4e2e22a-6b88-4d5f-aeb4-5c8e8a4c1004",
+      "version": [
+        0,
+        1,
+        0
+      ]
+    }
+  ]
+}
