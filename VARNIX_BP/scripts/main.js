@@ -1,8 +1,9 @@
-import { world, system, EntityDamageCause } from "@minecraft/server";
+import { world, system, EntityDamageCause, ItemStack } from "@minecraft/server";
 
 const COOLDOWN = new Map();
 const MAGAZINES = new Map();
 const LAST_GUN = new Map();
+const LAST_AMMO = new Map();
 const INFECTIONS = new Map();
 const GENERATORS = new Map();
 const CAPACITY = {"varnix:pistol":12,"varnix:rifle":30,"varnix:shotgun":6,"varnix:sniper":5};
@@ -49,7 +50,7 @@ function shoot(player, itemId) {
   try {
     const hits=player.getEntitiesFromViewDirection({maxDistance:cfg.range});
     if (hits.length && hits[0].entity) {
-      hits[0].entity.applyDamage(cfg.damage,{cause:EntityDamageCause.projectile,damagingEntity:player});
+      hits[0].entity.applyDamage(cfg.damage*(LAST_AMMO.get(key)==="uranium"?1.5:1),{cause:EntityDamageCause.projectile,damagingEntity:player});
       message(player,cfg.label+" شلیک شد.");
     } else message(player,"شلیک شد؛ تیر به هدفی برخورد نکرد.");
   } catch { message(player,"شلیک ناموفق بود."); }
@@ -95,7 +96,7 @@ world.afterEvents.entityHurt.subscribe((event) => {
   const attacker=event.damageSource.damagingEntity;
   if (!victim || victim.typeId!=="minecraft:player" || !attacker) return;
   try {
-    if (attacker.getComponent("minecraft:type_family")?.hasTypeFamily("varnix_infected")) infect(victim);
+    if (["varnix:infected","varnix:infected_runner","varnix:infected_brute","varnix:mutant_alpha"].includes(attacker.typeId)) infect(victim);
   } catch {}
 });
 
@@ -119,7 +120,15 @@ world.afterEvents.itemUse.subscribe(({source,itemStack}) => {
     const gun=LAST_GUN.get(source.id)||"varnix:pistol";
     if (!consume(source,"varnix:ammo_box")) return;
     MAGAZINES.set(source.id+":"+gun,CAPACITY[gun]);
+    LAST_AMMO.set(source.id+":"+gun,"normal");
     message(source,"خشاب "+gun.replace("varnix:","")+" پر شد.");
+  }
+  if (id==="varnix:uranium_ammo") {
+    const gun=LAST_GUN.get(source.id)||"varnix:pistol";
+    if (!consume(source,"varnix:uranium_ammo")) return;
+    MAGAZINES.set(source.id+":"+gun,CAPACITY[gun]);
+    LAST_AMMO.set(source.id+":"+gun,"uranium");
+    message(source,"مهمات اورانیومی بارگذاری شد؛ قدرت آسیب ۵۰٪ بیشتر است.");
   }
   if (id==="varnix:radio") message(source,"بی‌سیم اضطراری: «اینجا پایگاه شمالی... به بیمارستان قدیمی نزدیک نشوید.»");
 });
@@ -163,7 +172,7 @@ world.afterEvents.playerInteractWithBlock.subscribe(({player,block}) => {
 world.afterEvents.playerBreakBlock.subscribe(({player,brokenBlockPermutation,block}) => {
   if (brokenBlockPermutation.type.id==="varnix:uranium_ore") {
     try {
-      block.dimension.spawnItem({typeId:"varnix:uranium",amount:1},block.location);
+      block.dimension.spawnItem(new ItemStack("varnix:uranium",1),block.location);
       message(player,"§aاورانیوم خام به دست آوردی؛ مراقب تشعشع خیالی معدن باش!");
     } catch {}
   }
