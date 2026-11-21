@@ -3,6 +3,8 @@ name: Package VARNIX Add-on
 on:
   workflow_dispatch:
   push:
+    branches: [ main, 'feature/**' ]
+  pull_request:
     branches: [ main ]
 
 jobs:
@@ -14,13 +16,22 @@ jobs:
         run: |
           python - <<'PY'
           import json
+          import pathlib
+          for path in pathlib.Path(".").rglob("*.json"):
+              with open(path, encoding="utf-8") as f:
+                  json.load(f)
+              print("JSON OK:", path)
           for path in ["VARNIX_BP/manifest.json", "VARNIX_RP/manifest.json"]:
               with open(path, encoding="utf-8") as f:
                   data = json.load(f)
               assert data["format_version"] == 2
               assert data["header"]["min_engine_version"] == [1, 21, 51]
-              print("OK:", path)
+          assert pathlib.Path("VARNIX_RP/textures/items/pistol.png").is_file()
+          assert pathlib.Path("VARNIX_RP/textures/items/gas_mask.png").is_file()
+          print("Manifest and custom texture checks passed")
           PY
+      - name: Check script syntax
+        run: node --check VARNIX_BP/scripts/main.js
       - name: Package mcaddon
         run: |
           mkdir -p dist bundle
