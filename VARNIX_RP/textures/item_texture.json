@@ -1,0 +1,15 @@
+{
+  "resource_pack_name": "varnix_apocalypse_lite",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "field_bandage": {
+      "textures": "textures/items/paper"
+    },
+    "flare": {
+      "textures": "textures/items/blaze_rod"
+    },
+    "rusty_crowbar": {
+      "textures": "textures/items/iron_hoe"
+    }
+  }
+}
