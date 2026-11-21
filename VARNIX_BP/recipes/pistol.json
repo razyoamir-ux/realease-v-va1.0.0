@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "varnix:pistol_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "ABA",
+      " C ",
+      " C "
+    ],
+    "key": {
+      "A": {
+        "item": "minecraft:iron_ingot"
+      },
+      "B": {
+        "item": "minecraft:flint"
+      },
+      "C": {
+        "item": "minecraft:iron_nugget"
+      }
+    },
+    "result": {
+      "item": "varnix:pistol",
+      "count": 1
+    }
+  }
+}
