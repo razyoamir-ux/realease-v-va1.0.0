@@ -12,6 +12,12 @@
     },
     "abandoned_supply_crate": {
       "textures": "textures/blocks/iron_block"
+    },
+    "generator": {
+      "textures": "textures/blocks/furnace_front_on"
+    },
+    "uranium_ore": {
+      "textures": "textures/blocks/emerald_ore"
     }
   }
 }
