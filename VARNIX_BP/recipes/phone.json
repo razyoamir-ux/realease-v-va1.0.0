@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "varnix:phone_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "ABA",
+      "BCB",
+      "ACA"
+    ],
+    "key": {
+      "A": {
+        "item": "minecraft:glass_pane"
+      },
+      "B": {
+        "item": "minecraft:redstone"
+      },
+      "C": {
+        "item": "minecraft:iron_ingot"
+      }
+    },
+    "result": {
+      "item": "varnix:phone",
+      "count": 1
+    }
+  }
+}
