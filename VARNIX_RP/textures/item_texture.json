@@ -49,6 +49,9 @@
     },
     "battery": {
       "textures": "textures/items/redstone"
+    },
+    "uranium_ammo": {
+      "textures": "textures/items/fireworks"
     }
   }
 }
