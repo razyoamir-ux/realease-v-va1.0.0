@@ -87,7 +87,16 @@ world.afterEvents.playerSpawn.subscribe(({player,initialSpawn}) => {
   if (initialSpawn) {
     message(player,"سامانه‌های وارنیکس به‌صورت خودکار فعال شدند؛ نیازی به دستور راه‌اندازی نیست.");
     message(player,"برای زنده ماندن مراقب گازگرفتگی باش. آلودگی فقط ۵ دقیقه فرصت درمان می‌دهد.");
-    message(player,"اورانیوم را از سنگ معدن سبز پیدا کن؛ برای پادزهر، سلول انرژی و مهمات ویژه کاربرد دارد.");
+    message(player,"اورانیوم را از جعبه‌های تدارکات یا سنگ معدن پیدا کن؛ برای پادزهر، سلول انرژی و مهمات ویژه کاربرد دارد.");
+    try {
+      const inv=inventory(player);
+      if (inv) {
+        for (const [id,count] of [["varnix:phone",1],["varnix:radio",1],["varnix:pistol",1],["varnix:ammo_box",2],["varnix:field_bandage",3],["minecraft:coal",4]]) {
+          inv.addItem(new ItemStack(id,count));
+        }
+      }
+      message(player,"§aکیت آغازین بازمانده به‌صورت خودکار تحویل داده شد.");
+    } catch { message(player,"کیت آغازین را می‌توانی از جعبه تدارکات تهیه کنی."); }
   }
 });
 
