@@ -34,6 +34,21 @@
     },
     "ammo_box": {
       "textures": "textures/items/fireworks"
+    },
+    "uranium": {
+      "textures": "textures/items/emerald"
+    },
+    "antiviral_serum": {
+      "textures": "textures/items/potion_bottle_splash"
+    },
+    "uranium_cell": {
+      "textures": "textures/items/ender_pearl"
+    },
+    "gas_can": {
+      "textures": "textures/items/honey_bottle"
+    },
+    "battery": {
+      "textures": "textures/items/redstone"
     }
   }
 }
