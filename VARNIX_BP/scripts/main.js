@@ -3,99 +3,191 @@ import { world, system, EntityDamageCause } from "@minecraft/server";
 const COOLDOWN = new Map();
 const MAGAZINES = new Map();
 const LAST_GUN = new Map();
+const INFECTIONS = new Map();
+const GENERATORS = new Map();
 const CAPACITY = {"varnix:pistol":12,"varnix:rifle":30,"varnix:shotgun":6,"varnix:sniper":5};
-const lastUse = (id, key, ticks) => {
-  const now = system.currentTick;
-  const k = id + ":" + key;
-  const previous = COOLDOWN.get(k) ?? -9999;
-  if (now - previous < ticks) return false;
-  COOLDOWN.set(k, now);
-  return true;
-};
+const GUNS = ["varnix:pistol","varnix:rifle","varnix:shotgun","varnix:sniper"];
 
 function message(player, text) {
   try { player.sendMessage("§6[وارنیکس] §f" + text); } catch {}
 }
-
-function shoot(player, itemId) {
-  const configs = {
-    "varnix:pistol": {damage: 6, range: 24, cooldown: 8, label: "کلت"},
-    "varnix:rifle": {damage: 8, range: 42, cooldown: 4, label: "رایفل"},
-    "varnix:shotgun": {damage: 4, range: 13, cooldown: 18, label: "شاتگان"},
-    "varnix:sniper": {damage: 22, range: 64, cooldown: 32, label: "اسنایپر"}
-  };
-  const cfg = configs[itemId];
-  if (!cfg || !lastUse(player.id, itemId, cfg.cooldown)) return;
-  LAST_GUN.set(player.id, itemId);
-  const magazineKey = player.id + ":" + itemId;
-  const remaining = MAGAZINES.has(magazineKey) ? MAGAZINES.get(magazineKey) : CAPACITY[itemId];
-  if (remaining <= 0) { message(player, "خشاب خالی است؛ جعبه مهمات را استفاده کن."); return; }
-  MAGAZINES.set(magazineKey, remaining - 1);
-  try {
-    const hits = player.getEntitiesFromViewDirection({maxDistance: cfg.range, ignoreBlockCollision: false});
-    if (itemId === "varnix:shotgun") {
-      const candidates = player.dimension.getEntities({location: player.location, maxDistance: 9, families:["varnix_infected"]});
-      let hitCount = 0;
-      for (const target of candidates) {
-        if (target.id === player.id) continue;
-        try { target.applyDamage(cfg.damage, {cause: EntityDamageCause.projectile, damagingEntity: player}); hitCount++; } catch {}
-      }
-      message(player, hitCount ? "شلیک شاتگان؛ هدف‌های نزدیک آسیب دیدند." : "شلیک شد؛ هدفی در محدوده نبود.");
-    } else if (hits.length && hits[0].entity) {
-      hits[0].entity.applyDamage(cfg.damage, {cause: EntityDamageCause.projectile, damagingEntity: player});
-      message(player, cfg.label + " شلیک شد.");
-    } else {
-      message(player, "شلیک شد؛ تیر به هدفی برخورد نکرد.");
+function cooldown(id, key, ticks) {
+  const now = system.currentTick, k = id + ":" + key;
+  if (now - (COOLDOWN.get(k) ?? -99999) < ticks) return false;
+  COOLDOWN.set(k, now);
+  return true;
+}
+function inventory(player) {
+  return player.getComponent("minecraft:inventory")?.container;
+}
+function consume(player, typeId) {
+  const inv = inventory(player);
+  if (!inv) return false;
+  for (let i = 0; i < inv.size; i++) {
+    const stack = inv.getItem(i);
+    if (stack?.typeId === typeId) {
+      if (stack.amount > 1) { stack.amount--; inv.setItem(i, stack); }
+      else inv.setItem(i, undefined);
+      return true;
     }
-  } catch {
-    message(player, "خطا در شلیک؛ مطمئن شو قابلیت‌های آزمایشی موردنیاز خاموش نیستند و بسته فعال است.");
   }
+  return false;
+}
+function shoot(player, itemId) {
+  const cfg = {
+    "varnix:pistol": {damage:6,range:24,cooldown:8,label:"کلت"},
+    "varnix:rifle": {damage:8,range:42,cooldown:4,label:"رایفل"},
+    "varnix:shotgun": {damage:4,range:13,cooldown:18,label:"شاتگان"},
+    "varnix:sniper": {damage:22,range:64,cooldown:32,label:"اسنایپر"}
+  }[itemId];
+  if (!cfg || !cooldown(player.id,itemId,cfg.cooldown)) return;
+  LAST_GUN.set(player.id,itemId);
+  const key=player.id+":"+itemId;
+  const ammo=MAGAZINES.has(key)?MAGAZINES.get(key):CAPACITY[itemId];
+  if (ammo<=0) { message(player,"خشاب خالی است؛ جعبه مهمات را استفاده کن."); return; }
+  MAGAZINES.set(key,ammo-1);
+  try {
+    const hits=player.getEntitiesFromViewDirection({maxDistance:cfg.range});
+    if (hits.length && hits[0].entity) {
+      hits[0].entity.applyDamage(cfg.damage,{cause:EntityDamageCause.projectile,damagingEntity:player});
+      message(player,cfg.label+" شلیک شد.");
+    } else message(player,"شلیک شد؛ تیر به هدفی برخورد نکرد.");
+  } catch { message(player,"شلیک ناموفق بود."); }
 }
 
-world.afterEvents.itemUse.subscribe(({source, itemStack}) => {
-  const id = itemStack.typeId;
-  if (id.startsWith("varnix:") && ["varnix:pistol","varnix:rifle","varnix:shotgun","varnix:sniper"].includes(id)) {
-    shoot(source, id);
+function generatorKey(block) {
+  const p=block.location;
+  return block.dimension.id+":"+p.x+":"+p.y+":"+p.z;
+}
+function poweredNearby(player) {
+  for (const entry of GENERATORS.values()) {
+    if (entry.dimensionId!==player.dimension.id || entry.until<=system.currentTick) continue;
+    const p=player.location, g=entry.location;
+    const dx=p.x-g.x, dy=p.y-g.y, dz=p.z-g.z;
+    if (dx*dx+dy*dy+dz*dz<=256) return true;
   }
-  if (id === "varnix:phone") {
-    message(source, "گوشی باز شد: /function varnix_help برای راهنما، /function varnix_story_start برای شروع داستان، /function varnix_free_mode برای بقای آزاد.");
-    message(source, "این گوشی داخل دنیای بازی شبیه‌سازی شده و به سخت‌افزار واقعی تلفن دسترسی ندارد.");
-  }
-  if (id === "varnix:car_key") {
-    if (!lastUse(source.id, "car", 80)) return;
-    const p = source.location, d = source.getViewDirection();
-    const at = {x:p.x+d.x*3, y:p.y, z:p.z+d.z*3};
-    try {
-      source.dimension.spawnEntity("varnix:rusty_car", at);
-      message(source, "خودروی فرسوده در نزدیکی تو ظاهر شد. نزدیکش شو و سوار شو.");
-    } catch { message(source, "ساخت خودرو ناموفق بود؛ بسته رفتاری را بررسی کن."); }
-  }
-  if (id === "varnix:ammo_box") {\n    const gun = LAST_GUN.get(source.id) ?? "varnix:pistol";\n    const inv = source.getComponent("minecraft:inventory")?.container;\n    if (inv) {\n      for (let i = 0; i < inv.size; i++) {\n        const stack = inv.getItem(i);\n        if (stack?.typeId === "varnix:ammo_box") {\n          if (stack.amount > 1) { stack.amount -= 1; inv.setItem(i, stack); }\n          else inv.setItem(i);\n          break;\n        }\n      }\n    }\n    MAGAZINES.set(source.id + ":" + gun, CAPACITY[gun]);\n    message(source, "خشاب " + gun.replace("varnix:","") + " پر شد.");\n  }\n  if (id === "varnix:radio") {
-    message(source, "بی‌سیم اضطراری: «اینجا پایگاه شمالی... اگر کسی صدای ما را می‌شنود، به بیمارستان قدیمی نزدیک نشود.»");
+  return false;
+}
+function infect(player) {
+  if (INFECTIONS.has(player.id)) return;
+  INFECTIONS.set(player.id,system.currentTick+6000);
+  message(player,"§cآلودگی وارد بدنت شد! فقط ۵ دقیقه فرصت داری پادزهر بسازی و مصرف کنی.");
+  try { player.addEffect("nausea",100,{amplifier:0,showParticles:false}); } catch {}
+}
+function cure(player) {
+  if (!INFECTIONS.has(player.id)) { message(player,"تو آلوده نیستی."); return; }
+  if (!consume(player,"varnix:antiviral_serum")) { message(player,"پادزهر در کیف تو نیست."); return; }
+  INFECTIONS.delete(player.id);
+  try { player.removeEffect("nausea"); player.removeEffect("slowness"); } catch {}
+  message(player,"§aدرمان موفق! عفونت زامبی مهار شد.");
+}
+
+world.afterEvents.playerSpawn.subscribe(({player,initialSpawn}) => {
+  if (initialSpawn) {
+    message(player,"سامانه‌های وارنیکس به‌صورت خودکار فعال شدند؛ نیازی به دستور راه‌اندازی نیست.");
+    message(player,"برای زنده ماندن مراقب گازگرفتگی باش. آلودگی فقط ۵ دقیقه فرصت درمان می‌دهد.");
+    message(player,"اورانیوم را از سنگ معدن سبز پیدا کن؛ برای پادزهر، سلول انرژی و مهمات ویژه کاربرد دارد.");
   }
 });
 
-world.afterEvents.playerInteractWithBlock.subscribe(({player, block}) => {
-  if (block.typeId === "varnix:computer_terminal") {
-    message(player, "رایانه پایگاه: پرونده ۲۰۳۱ باز شد. منشأ آلودگی هنوز نامشخص است. برای شروع مأموریت /function varnix_story_start را اجرا کن.");
+world.afterEvents.entityHurt.subscribe((event) => {
+  const victim=event.hurtEntity;
+  const attacker=event.damageSource.damagingEntity;
+  if (!victim || victim.typeId!=="minecraft:player" || !attacker) return;
+  try {
+    if (attacker.getComponent("minecraft:type_family")?.hasTypeFamily("varnix_infected")) infect(victim);
+  } catch {}
+});
+
+world.afterEvents.itemUse.subscribe(({source,itemStack}) => {
+  if (source.typeId!=="minecraft:player") return;
+  const id=itemStack.typeId;
+  if (GUNS.includes(id)) shoot(source,id);
+  if (id==="varnix:antiviral_serum") cure(source);
+  if (id==="varnix:phone") {
+    message(source,"گوشی هوشمند: پایگاه، مأموریت‌ها و وضعیت بقا آماده‌اند. برای داستان گروهی با هم‌تیمی‌ها به آزمایشگاه برو.");
+    message(source,"این وسیله فقط داخل Minecraft شبیه‌سازی شده است.");
   }
-  if (block.typeId === "varnix:cctv_console") {
-    const hostiles = player.dimension.getEntities({location: player.location, maxDistance: 32, families:["varnix_infected"]});
-    message(player, "دوربین‌های محوطه: " + hostiles.length + " آلوده در شعاع ۳۲ بلوکی شناسایی شد.");
-  }
-  if (block.typeId === "varnix:abandoned_supply_crate") {
+  if (id==="varnix:car_key" && cooldown(source.id,"car",80)) {
+    const p=source.location,d=source.getViewDirection();
     try {
-      player.dimension.runCommand("loot give \"" + player.name + "\" loot \"varnix:chests/abandoned_supply\"");
-      message(player, "جعبه تدارکات بررسی شد.");
-    } catch { message(player, "جعبه هنوز آماده نیست؛ جدول غنیمت را بررسی کن."); }
+      source.dimension.spawnEntity("varnix:rusty_car",{x:p.x+d.x*3,y:p.y,z:p.z+d.z*3});
+      message(source,"خودروی فرسوده نزدیکت ظاهر شد.");
+    } catch { message(source,"ساخت خودرو ناموفق بود؛ بسته رفتاری را بررسی کن."); }
+  }
+  if (id==="varnix:ammo_box") {
+    const gun=LAST_GUN.get(source.id)||"varnix:pistol";
+    if (!consume(source,"varnix:ammo_box")) return;
+    MAGAZINES.set(source.id+":"+gun,CAPACITY[gun]);
+    message(source,"خشاب "+gun.replace("varnix:","")+" پر شد.");
+  }
+  if (id==="varnix:radio") message(source,"بی‌سیم اضطراری: «اینجا پایگاه شمالی... به بیمارستان قدیمی نزدیک نشوید.»");
+});
+
+world.afterEvents.playerInteractWithBlock.subscribe(({player,block}) => {
+  if (block.typeId==="varnix:generator") {
+    const key=generatorKey(block);
+    if (GENERATORS.has(key) && GENERATORS.get(key).until>system.currentTick) {
+      GENERATORS.delete(key);
+      message(player,"ژنراتور خاموش شد.");
+      return;
+    }
+    let duration=0, fuel="";
+    if (consume(player,"varnix:uranium_cell")) { duration=24000; fuel="سلول اورانیومی"; }
+    else if (consume(player,"varnix:gas_can")) { duration=12000; fuel="گالن سوخت"; }
+    else if (consume(player,"minecraft:coal") || consume(player,"minecraft:charcoal")) { duration=6000; fuel="زغال"; }
+    if (!duration) { message(player,"برای روشن‌کردن ژنراتور، زغال، گالن سوخت یا سلول اورانیومی لازم داری."); return; }
+    GENERATORS.set(key,{dimensionId:block.dimension.id,location:block.location,until:system.currentTick+duration});
+    message(player,"§aژنراتور روشن شد؛ سوخت: "+fuel+". برق تا پایان شارژ به تجهیزات نزدیک می‌رسد.");
+    return;
+  }
+  if (block.typeId==="varnix:computer_terminal" || block.typeId==="varnix:cctv_console") {
+    if (!poweredNearby(player)) { message(player,"§cبرق قطع است! اول ژنراتور نزدیک را روشن کن."); return; }
+  }
+  if (block.typeId==="varnix:computer_terminal") {
+    message(player,"رایانه پایگاه: پرونده ۲۰۳۱ باز شد. منشأ آلودگی در آزمایشگاه زیرزمینی ثبت شده است.");
+    message(player,"اورانیوم برای ساخت پادزهر و تجهیزات انرژی حیاتی است.");
+  }
+  if (block.typeId==="varnix:cctv_console") {
+    const hostiles=player.dimension.getEntities({location:player.location,maxDistance:32,families:["varnix_infected"]});
+    message(player,"دوربین‌های محوطه: "+hostiles.length+" آلوده در شعاع ۳۲ بلوکی شناسایی شد.");
+  }
+  if (block.typeId==="varnix:abandoned_supply_crate") {
+    try {
+      player.dimension.runCommand("loot give @p loot varnix:chests/abandoned_supply");
+      message(player,"جعبه تدارکات بررسی شد.");
+    } catch { message(player,"جعبه هنوز آماده نیست."); }
+  }
+});
+
+world.afterEvents.playerBreakBlock.subscribe(({player,brokenBlockPermutation,block}) => {
+  if (brokenBlockPermutation.type.id==="varnix:uranium_ore") {
+    try {
+      block.dimension.spawnItem({typeId:"varnix:uranium",amount:1},block.location);
+      message(player,"§aاورانیوم خام به دست آوردی؛ مراقب تشعشع خیالی معدن باش!");
+    } catch {}
   }
 });
 
 system.runInterval(() => {
+  const now=system.currentTick;
+  for (const [key,g] of GENERATORS) if (g.until<=now) GENERATORS.delete(key);
   for (const player of world.getAllPlayers()) {
-    const nearby = player.dimension.getEntities({location: player.location, maxDistance: 22, families:["varnix_infected"]});
-    if (nearby.length > 0 && Math.random() < 0.012) {
-      message(player, "§cصدای ناله‌ای از نزدیکی می‌آید...");
+    const expiry=INFECTIONS.get(player.id);
+    if (expiry!==undefined) {
+      const left=expiry-now;
+      if (left<=0) {
+        INFECTIONS.delete(player.id);
+        try { player.applyDamage(1000,{cause:EntityDamageCause.magic}); } catch {}
+        message(player,"§4زمان آلودگی تمام شد؛ بیماری به مرحله نهایی رسید.");
+      } else {
+        if (left===1200 || left===600 || left===200) message(player,"§cزمان باقی‌مانده تا تبدیل: "+Math.ceil(left/20)+" ثانیه!");
+        if (left<=1200 && left%200===0) {
+          try { player.addEffect("slowness",100,{amplifier:0,showParticles:false}); } catch {}
+        }
+      }
     }
+    const nearby=player.dimension.getEntities({location:player.location,maxDistance:22,families:["varnix_infected"]});
+    if (nearby.length>0 && Math.random()<0.012) message(player,"صدای ناله‌ای از نزدیکی می‌آید...");
   }
-}, 100);
+},20);
