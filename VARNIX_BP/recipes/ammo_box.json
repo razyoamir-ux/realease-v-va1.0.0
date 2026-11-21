@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "varnix:ammo_box_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "ABA",
+      "BCB",
+      "ABA"
+    ],
+    "key": {
+      "A": {
+        "item": "minecraft:iron_ingot"
+      },
+      "B": {
+        "item": "minecraft:gunpowder"
+      },
+      "C": {
+        "item": "minecraft:paper"
+      }
+    },
+    "result": {
+      "item": "varnix:ammo_box",
+      "count": 1
+    }
+  }
+}
