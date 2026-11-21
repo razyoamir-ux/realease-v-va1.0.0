@@ -1,0 +1,18 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "varnix:antiviral_serum",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "antiviral_serum",
+      "minecraft:display_name": {
+        "value": "پادزهر ویروس زامبی"
+      },
+      "minecraft:max_stack_size": 16
+    }
+  }
+}
