@@ -18,3 +18,4 @@ entity.varnix:rusty_car.name=Rusty Car
 tile.varnix:computer_terminal.name=Base Computer
 tile.varnix:cctv_console.name=CCTV Console
 tile.varnix:abandoned_supply_crate.name=Supply Crate
+entity.varnix:mutant_alpha.name=Alpha Mutant
