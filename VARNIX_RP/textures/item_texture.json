@@ -12,16 +12,16 @@
       "textures": "textures/items/iron_hoe"
     },
     "pistol": {
-      "textures": "textures/items/iron_nugget"
+      "textures": "textures/items/pistol"
     },
     "rifle": {
-      "textures": "textures/items/iron_ingot"
+      "textures": "textures/items/rifle"
     },
     "shotgun": {
-      "textures": "textures/items/iron_pickaxe"
+      "textures": "textures/items/shotgun"
     },
     "sniper": {
-      "textures": "textures/items/spyglass"
+      "textures": "textures/items/sniper"
     },
     "phone": {
       "textures": "textures/items/clock_item"
@@ -55,6 +55,36 @@
     },
     "recipe_guide": {
       "textures": "textures/items/book_written"
+    },
+    "gas_mask": {
+      "textures": "textures/items/gas_mask"
+    },
+    "tactical_vest": {
+      "textures": "textures/items/tactical_vest"
+    },
+    "medkit": {
+      "textures": "textures/items/medkit"
+    },
+    "flashlight": {
+      "textures": "textures/items/flashlight"
+    },
+    "backpack": {
+      "textures": "textures/items/backpack"
+    },
+    "field_ration": {
+      "textures": "textures/items/field_ration"
+    },
+    "water_filter": {
+      "textures": "textures/items/water_filter"
+    },
+    "gps": {
+      "textures": "textures/items/gps"
+    },
+    "laptop": {
+      "textures": "textures/items/laptop"
+    },
+    "camera": {
+      "textures": "textures/items/camera"
     }
   }
 }
