@@ -9,7 +9,7 @@
     ],
     "pattern": [
       "RUR",
-      "IUI",
+      "IBI",
       "RIR"
     ],
     "key": {
@@ -21,6 +21,9 @@
       },
       "I": {
         "item": "minecraft:iron_ingot"
+      },
+      "B": {
+        "item": "varnix:battery"
       }
     },
     "result": {
