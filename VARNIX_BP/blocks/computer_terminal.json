@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.50",
+  "minecraft:block": {
+    "description": {
+      "identifier": "varnix:computer_terminal",
+      "menu_category": {
+        "category": "construction"
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 2
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 6
+      },
+      "minecraft:collision_box": true,
+      "minecraft:selection_box": true,
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "computer_terminal",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:map_color": "#555555"
+    }
+  }
+}
