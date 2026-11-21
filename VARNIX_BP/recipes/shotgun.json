@@ -1,0 +1,28 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "varnix:shotgun_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "I I",
+      "IFI",
+      " II"
+    ],
+    "key": {
+      "I": {
+        "item": "minecraft:iron_ingot"
+      },
+      "F": {
+        "item": "minecraft:flint"
+      }
+    },
+    "result": {
+      "item": "varnix:shotgun",
+      "count": 1
+    }
+  }
+}
