@@ -14,7 +14,16 @@
       },
       "render_controllers": [
         "controller.render.varnix_car"
-      ]
+      ],
+      "animations": {
+        "drive": "animation.varnix.car.drive",
+        "controller": "controller.animation.varnix.car"
+      },
+      "scripts": {
+        "animate": [
+          "controller"
+        ]
+      }
     }
   }
 }

@@ -91,7 +91,7 @@ world.afterEvents.playerSpawn.subscribe(({player,initialSpawn}) => {
     try {
       const inv=inventory(player);
       if (inv) {
-        for (const [id,count] of [["varnix:phone",1],["varnix:radio",1],["varnix:pistol",1],["varnix:ammo_box",2],["varnix:field_bandage",3],["varnix:recipe_guide",1],["minecraft:coal",4]]) {
+        for (const [id,count] of [["varnix:phone",1],["varnix:radio",1],["varnix:pistol",1],["varnix:ammo_box",2],["varnix:field_bandage",3],["varnix:recipe_guide",1],["varnix:medkit",1],["varnix:flashlight",1],["varnix:gps",1],["varnix:field_ration",3],["minecraft:coal",4]]) {
           inv.addItem(new ItemStack(id,count));
         }
       }
@@ -139,7 +139,55 @@ world.afterEvents.itemUse.subscribe(({source,itemStack}) => {
     message(source,"§fاورانیوم خام: از سنگ معدن اورانیوم به دست می‌آید. جعبه تدارکات: با تعامل، غنیمت می‌دهد.");
     message(source,"§fآلوده‌ها و جهش‌یافته‌ها: دشمن هستند؛ خودرو با کلید خودرو ظاهر می‌شود.");
     message(source,"§fرایانه پایگاه و کنسول دوربین: بلوک‌های اختصاصی هستند؛ برای استفاده از آن‌ها ژنراتور نزدیک را روشن کن.");
+    message(source,"§e§lبخش ۴ — تجهیزات تازه نسخه ۰٫۴٫۰");
+    message(source,"§6[ماسک ضدآلودگی] §fچرم + شیشه + زغال؛ استفاده، محافظت موقت می‌دهد.");
+    message(source,"§6[جلیقه تاکتیکی] §fچرم + ۲ شمش آهن؛ استفاده، مقاومت موقت می‌دهد.");
+    message(source,"§6[کیف کمک‌های اولیه] §f۲ بانداژ + سیب طلایی؛ سلامتی را بازیابی می‌کند.");
+    message(source,"§6[چراغ‌قوه] §fشمش آهن + مشعل + ردستون؛ دید در شب ۴۵ ثانیه.");
+    message(source,"§6[کوله‌پشتی] §f۲ چرم + نخ؛ ابزار سفر (افزایش ظرفیت کیف هنوز پشتیبانی نمی‌شود).");
+    message(source,"§6[جیره غذایی ×۳] §fگوشت پخته + نان + هویج.");
+    message(source,"§6[فیلتر آب] §fشمش آهن + بطری شیشه‌ای + زغال؛ اثرات مسمومیت را پاک می‌کند.");
+    message(source,"§6[GPS] §fقطب‌نما + ردستون + شیشه؛ مختصات را نشان می‌دهد.");
+    message(source,"§6[لپ‌تاپ] §fشمش آهن + ردستون + شیشه؛ پرونده داستانی را باز می‌کند.");
+    message(source,"§6[دوربین دیجیتال] §fشمش آهن + شیشه + آمتیست؛ آلوده‌های نزدیک را شناسایی می‌کند.");
     message(source,"§aهمه دستورهای بالا مطابق فایل‌های رسپی افزونه هستند؛ شکل‌ها را در میز ساخت ۳×۳ بچین.");
+  }
+  if (id==="varnix:medkit") {
+    if (!consume(source,"varnix:medkit")) return;
+    try { source.addEffect("regeneration",160,{amplifier:2,showParticles:true}); source.addEffect("absorption",200,{amplifier:1,showParticles:false}); } catch {}
+    message(source,"§aکیف کمک‌های اولیه مصرف شد؛ بازیابی سلامتی آغاز شد.");
+  }
+  if (id==="varnix:gas_mask") {
+    try { source.removeEffect("poison"); source.removeEffect("wither"); source.addEffect("resistance",800,{amplifier:0,showParticles:false}); } catch {}
+    message(source,"ماسک ضدآلودگی فعال شد؛ محافظت موقت در برابر آسیب برقرار شد.");
+  }
+  if (id==="varnix:tactical_vest") {
+    try { source.addEffect("resistance",600,{amplifier:0,showParticles:false}); } catch {}
+    message(source,"جلیقه تاکتیکی برای مدت کوتاهی مقاومتت را افزایش داد.");
+  }
+  if (id==="varnix:flashlight") {
+    try { source.addEffect("night_vision",900,{amplifier:0,showParticles:false}); } catch {}
+    message(source,"چراغ‌قوه روشن شد؛ دید در تاریکی برای ۴۵ ثانیه بهتر شد.");
+  }
+  if (id==="varnix:water_filter") {
+    if (!consume(source,"varnix:water_filter")) return;
+    try { source.removeEffect("poison"); source.removeEffect("hunger"); source.addEffect("water_breathing",300,{amplifier:0,showParticles:false}); } catch {}
+    message(source,"فیلتر آب استفاده شد؛ اثرات آلودگی غذایی پاک شدند.");
+  }
+  if (id==="varnix:gps") {
+    const p=source.location;
+    message(source,"موقعیت GPS: X="+Math.floor(p.x)+"  Y="+Math.floor(p.y)+"  Z="+Math.floor(p.z)+" | بُعد: "+source.dimension.id);
+  }
+  if (id==="varnix:laptop") {
+    message(source,"§bلپ‌تاپ عملیاتی — پرونده ۲۰۳۱");
+    message(source,"گزارش: اولین موارد آلودگی در نزدیکی مرکز تحقیقاتی شمال ثبت شدند. برق ژنراتور برای دسترسی به پایانه‌ها ضروری است.");
+  }
+  if (id==="varnix:camera") {
+    const seen=source.dimension.getEntities({location:source.location,maxDistance:48,families:["varnix_infected"]});
+    message(source,"دوربین شناسایی: "+seen.length+" موجود آلوده در شعاع ۴۸ بلوکی دیده شد.");
+  }
+  if (id==="varnix:backpack") {
+    message(source,"کوله‌پشتی بقا: تجهیزات پزشکی، خوراک و ابزار را برای سفر آماده نگه دار. (افزایش ظرفیت موجودی در API فعلی پشتیبانی نمی‌شود.)");
   }
   if (id==="varnix:phone") {
     message(source,"گوشی هوشمند: پایگاه، مأموریت‌ها و وضعیت بقا آماده‌اند. برای داستان گروهی با هم‌تیمی‌ها به آزمایشگاه برو.");

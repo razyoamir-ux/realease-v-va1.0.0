@@ -1,0 +1,26 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "varnix:medkit_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "varnix:field_bandage"
+      },
+      {
+        "item": "varnix:field_bandage"
+      },
+      {
+        "item": "minecraft:golden_apple"
+      }
+    ],
+    "result": {
+      "item": "varnix:medkit",
+      "count": 1
+    }
+  }
+}

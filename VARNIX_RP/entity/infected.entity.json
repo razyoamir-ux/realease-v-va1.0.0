@@ -18,6 +18,19 @@
       "spawn_egg": {
         "base_color": "#52634A",
         "overlay_color": "#242B24"
+      },
+      "animations": {
+        "idle": "animation.varnix.infected.idle",
+        "walk": "animation.varnix.infected.walk",
+        "run": "animation.varnix.infected.run",
+        "attack": "animation.varnix.infected.attack",
+        "death": "animation.varnix.infected.death",
+        "controller": "controller.animation.varnix.infected"
+      },
+      "scripts": {
+        "animate": [
+          "controller"
+        ]
       }
     }
   }
