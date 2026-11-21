@@ -10,6 +10,30 @@
     },
     "rusty_crowbar": {
       "textures": "textures/items/iron_hoe"
+    },
+    "pistol": {
+      "textures": "textures/items/iron_nugget"
+    },
+    "rifle": {
+      "textures": "textures/items/iron_ingot"
+    },
+    "shotgun": {
+      "textures": "textures/items/iron_pickaxe"
+    },
+    "sniper": {
+      "textures": "textures/items/spyglass"
+    },
+    "phone": {
+      "textures": "textures/items/clock_item"
+    },
+    "car_key": {
+      "textures": "textures/items/tripwire_hook"
+    },
+    "radio": {
+      "textures": "textures/items/compass_item"
+    },
+    "ammo_box": {
+      "textures": "textures/items/fireworks"
     }
   }
 }
