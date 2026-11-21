@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "varnix:infected_runner",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/zombie/zombie"
+      },
+      "geometry": {
+        "default": "geometry.zombie"
+      },
+      "render_controllers": [
+        "controller.render.zombie"
+      ],
+      "spawn_egg": {
+        "base_color": "#7A8A55",
+        "overlay_color": "#1D241D"
+      }
+    }
+  }
+}
