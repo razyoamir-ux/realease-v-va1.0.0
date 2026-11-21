@@ -30,6 +30,21 @@
           "type": "item",
           "name": "minecraft:cooked_beef",
           "weight": 3
+        },
+        {
+          "type": "item",
+          "name": "varnix:uranium",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "varnix:gas_can",
+          "weight": 2
+        },
+        {
+          "type": "item",
+          "name": "varnix:battery",
+          "weight": 3
         }
       ]
     }
