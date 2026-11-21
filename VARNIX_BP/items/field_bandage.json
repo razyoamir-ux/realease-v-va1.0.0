@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.50",
+  "minecraft:item": {
+    "description": {
+      "identifier": "varnix:field_bandage",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "field_bandage",
+      "minecraft:display_name": {
+        "value": "§fبانداژ صحرایی"
+      },
+      "minecraft:max_stack_size": 16,
+      "minecraft:food": {
+        "nutrition": 0,
+        "saturation_modifier": 0,
+        "can_always_eat": true,
+        "effects": [
+          {
+            "name": "regeneration",
+            "duration": 5,
+            "amplifier": 1,
+            "chance": 1
+          }
+        ]
+      }
+    }
+  }
+}
