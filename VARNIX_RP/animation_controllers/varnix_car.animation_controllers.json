@@ -1,0 +1,27 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.varnix.car": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "driving": "query.modified_move_speed > 0.01"
+            }
+          ]
+        },
+        "driving": {
+          "animations": [
+            "drive"
+          ],
+          "transitions": [
+            {
+              "default": "query.modified_move_speed <= 0.01"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
